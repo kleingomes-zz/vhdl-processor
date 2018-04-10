@@ -1,0 +1,41 @@
+-- Imemory.mif
+-- Example Program file 
+
+  -- op_nop  x"00";	op_addi x"01";	op_addiu x"02";	op_andi   x"03";	op_ori  x"04";	op_slti   x"05";
+  -- op_lui  x"06";	op_j    x"10";	op_beq   x"11";	op_bneq   x"12";	op_lw   x"20";	op_sw     x"21";
+  -- op_add  x"40";	op_sub  x"41";	op_and   x"42";	op_or     x"43";	op_slt  x"44";	op_sll    x"45";
+  -- op_srl  x"46";	op_sra  x"47";	op_mul   x"50";
+
+DEPTH = 25;                   % The size of memory (number of words we are writing) %
+WIDTH = 32;                   % Number of bits per word  %
+ADDRESS_RADIX = HEX;          % The radix for address values %
+DATA_RADIX = HEX;             % The radix for data values %
+CONTENT                       % start of (address : data pairs) %
+BEGIN
+
+
+1  : 00123456; % nop %
+2  : 01100303; % R1<=R0+x303;			 	       R1 = 00000303%
+3  : 0221FFFF; % R2<=R1  FFFF;			 	     R2 = 00010302%
+4  : 03310000; % R3<=R1 AND 0000;			     R3 = 00000000%
+5  : 04430017; % R4<=R3 OR 0016;			     R4 = 00000017%
+6  : 05140009; % R1=1 if R4<0009, FALSE;	 R1 = 00000000%
+7  : 06111001; % Load 1001 upperofR1		   R1 = 10010000%
+8  : 10440000; % Jump to R4 (x22) %	
+9  : 00999996; % nop %
+A  : 12113223; % BNEQ R1,R1,3223			 	   PC = 0000000B%
+B  : 20A31234; % RA <= val (Dmemaddress (R3+1234))		  %
+C  : 21A30000; % (DMemAdr(R3+0000))<=      RA			      %	
+D  : 40355000; % R3 <= R5+R5;				       R3 = 00000000%
+E  : 413A4000; % R3 <= RA-R4;				       R3 = 0000121D%
+F  : 42416000; % R4 <= R1 AND R6;			     R4 = 00000000%
+10 : 43516000; % R5 <= R1 OR R6;			     R5 = 10010000%
+11 : 44745000; % R7 <= 1 if R4<R5			     R7 = 00000001%
+12 : 45877000; % R8 <= R7 LSL R7			     R8 = 00000002%
+13 : 45887000; % R8 <= R8 LSL R7			     R8 = 00000004%
+14 : 46A87000; % RA <= R8 LSR R7			     RA = 00000002%
+15 : 47958000; % R9 <= R5 ASR R8			     R9 = 01001000%
+16 : 50F83000; % RF <= R8*R3				       RF = 00004874%
+17 : 1111FFF2; % Branch to 22-12 = A%
+18 : 00000000;
+END;
